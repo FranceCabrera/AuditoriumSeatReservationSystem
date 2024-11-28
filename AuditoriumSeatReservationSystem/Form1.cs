@@ -13,15 +13,15 @@ namespace AuditoriumSeatReservationSystem
         private void btnLogin_Click(object sender, EventArgs e)
         {
             LoginForm loginForm = new LoginForm();
-            loginForm.Show(); // Open the Login Form
-            this.Hide(); // Hide the Home Form
+            loginForm.Show();
+            this.Hide();
         }
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
             RegisterForm registerForm = new RegisterForm();
-            registerForm.Show(); // Open the Register Form
-            this.Hide(); // Hide the Home Form
+            registerForm.Show();
+            this.Hide(); 
         }
     }
 }
