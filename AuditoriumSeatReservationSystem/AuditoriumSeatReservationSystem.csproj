@@ -52,6 +52,12 @@
     <Compile Include="AuditoriumSeats.Designer.cs">
       <DependentUpon>AuditoriumSeats.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConfirmSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfirmSelectionForm.Designer.cs">
+      <DependentUpon>ConfirmSelectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -71,6 +77,12 @@
     </Compile>
     <Compile Include="RegisterForm.Designer.cs">
       <DependentUpon>RegisterForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ReservationReceiptForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReservationReceiptForm.Designer.cs">
+      <DependentUpon>ReservationReceiptForm.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="AuditoriumSeats.resx">
       <DependentUpon>AuditoriumSeats.cs</DependentUpon>
@@ -92,6 +104,9 @@
     </Compile>
     <EmbeddedResource Include="RegisterForm.resx">
       <DependentUpon>RegisterForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ReservationReceiptForm.resx">
+      <DependentUpon>ReservationReceiptForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
