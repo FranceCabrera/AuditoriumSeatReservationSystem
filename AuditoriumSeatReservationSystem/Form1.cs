@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AuditoriumSeatReservationSystem
@@ -8,6 +9,11 @@ namespace AuditoriumSeatReservationSystem
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+           
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -21,7 +27,12 @@ namespace AuditoriumSeatReservationSystem
         {
             RegisterForm registerForm = new RegisterForm();
             registerForm.Show();
-            this.Hide(); 
+            this.Hide();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

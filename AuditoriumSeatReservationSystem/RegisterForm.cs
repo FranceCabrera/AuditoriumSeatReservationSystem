@@ -13,16 +13,15 @@ namespace AuditoriumSeatReservationSystem
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            string studentID = txtStudentNo.Text.Trim();  // School ID input
-            string name = txtName.Text.Trim();           // Name input
-            string username = txtUsername.Text.Trim();   // Username input
-            string password = txtPassword.Text.Trim();   // Password input
-            string email = txtEmail.Text.Trim();         // Email input
-            string course = txtCourse.Text.Trim();       // Course input
-            string year = txtYear.Text.Trim();           // Year input
-            string section = txtSection.Text.Trim();     // Section input
+            string studentID = txtStudentNo.Text.Trim();  
+            string name = txtName.Text.Trim();           
+            string username = txtUsername.Text.Trim();   
+            string password = txtPassword.Text.Trim();   
+            string email = txtEmail.Text.Trim();         
+            string course = txtCourse.Text.Trim();       
+            string year = txtYear.Text.Trim();           
+            string section = txtSection.Text.Trim();     
 
-            // Validate inputs
             if (string.IsNullOrEmpty(studentID) || string.IsNullOrEmpty(name) ||
                 string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) ||
                 string.IsNullOrEmpty(email) || string.IsNullOrEmpty(course) ||
@@ -34,22 +33,18 @@ namespace AuditoriumSeatReservationSystem
 
             try
             {
-                // Validate email domain
                 if (!IsValidEmail(email))
                 {
                     throw new Exception("Email must end with @umak.edu.ph.");
                 }
 
-                // Check if username already exists
                 if (CheckIfUserExists(username))
                 {
                     throw new Exception("Username already exists. Please choose another one.");
                 }
-
-                // Register the user in the database
                 RegisterUser(studentID, name, username, password, email, course, year, section);
 
-                // Show success message and redirect to the login form
+               
                 MessageBox.Show("Registration Successful!");
                 Form1 homeForm = new Form1();
                 homeForm.Show();
@@ -102,7 +97,7 @@ namespace AuditoriumSeatReservationSystem
                     cmd.Parameters.AddWithValue("@StudentID", studentID);
                     cmd.Parameters.AddWithValue("@Name", name);
                     cmd.Parameters.AddWithValue("@Username", username);
-                    cmd.Parameters.AddWithValue("@Password", password); // For security, hash the password
+                    cmd.Parameters.AddWithValue("@Password", password);
                     cmd.Parameters.AddWithValue("@Email", email);
                     cmd.Parameters.AddWithValue("@Course", course);
                     cmd.Parameters.AddWithValue("@Year", year);
@@ -115,6 +110,16 @@ namespace AuditoriumSeatReservationSystem
         private void label1_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

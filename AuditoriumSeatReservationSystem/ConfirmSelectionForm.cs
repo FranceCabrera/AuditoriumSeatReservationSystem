@@ -6,86 +6,96 @@ namespace AuditoriumSeatReservationSystem
 {
     public partial class ConfirmSelectionForm : Form
     {
-        // Properties to hold the seat number and current user's name
+        // Properties for the selected seat and current user
         public string SeatNumber { get; set; }
-        public string CurrentUserName { get; set; }
+        public string UserName { get; set; }
 
-        // Database connection string (without encryption)
         private string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Frank\Documents\AuditoriumSeatSystem.mdf;Integrated Security=True;Connect Timeout=30;";
 
         public ConfirmSelectionForm(string seatNumber, string currentUserName)
         {
             InitializeComponent();
             SeatNumber = seatNumber;
-            CurrentUserName = currentUserName;
+            UserName = currentUserName;
         }
 
-        // Form Load event to update the label with the seat number and user name
         private void ConfirmSelectionForm_Load(object sender, EventArgs e)
         {
+            // Display seat number and username in the labels
             lblSeatNumber.Text = $"Seat Number: {SeatNumber}";
-            lblCurrentUser.Text = $"Reserved by: {CurrentUserName}";
+            lblCurrentUser.Text = $"Reserved by: {UserName}";
         }
 
-        // Event handler for the Reserve Seat button click
         private void BtnReserveSeat_Click(object sender, EventArgs e)
         {
             string date = txtDate.Text;
             string time = txtTime.Text;
 
-            // Validate the date and time fields
-            if (date == "Enter Date (YYYY-MM-DD)" || string.IsNullOrWhiteSpace(date) ||
-                time == "Enter Time (HH:MM)" || string.IsNullOrWhiteSpace(time))
+            // Validate the date and time inputs
+            if (string.IsNullOrWhiteSpace(date) || string.IsNullOrWhiteSpace(time))
             {
                 MessageBox.Show("Please enter valid date and time.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // Save reservation data to the database
-            SaveReservationToDatabase(CurrentUserName, SeatNumber, date, time);
+            if (!IsSeatStillAvailable(SeatNumber))
+            {
+                MessageBox.Show("This seat has already been reserved by another user.", "Seat Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-            // Open the ReservationReceiptForm with the necessary data
-            ReservationReceiptForm receiptForm = new ReservationReceiptForm(CurrentUserName, SeatNumber, date, time);
+            // Save the reservation in the database
+            SaveReservationToDatabase(UserName, SeatNumber, date, time);
+
+            MessageBox.Show("Reservation saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // Pass the data to ReservationReceiptForm and show it
+            ReservationReceiptForm receiptForm = new ReservationReceiptForm(UserName, SeatNumber, date, time);
             receiptForm.ShowDialog();
 
-            // Close the confirmation form
             this.Close();
         }
 
-        // Event handler for the Cancel button click
         private void BtnCancel_Click(object sender, EventArgs e)
         {
-            this.Close(); // Close the form
+            this.Close(); 
         }
 
-        // Method to save reservation data to the database
+        private bool IsSeatStillAvailable(string seat)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                string query = "SELECT COUNT(*) FROM Reservations WHERE Seat = @Seat";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Seat", seat);
+                    int count = (int)command.ExecuteScalar();
+                    return count == 0; 
+                }
+            }
+        }
+
         private void SaveReservationToDatabase(string username, string seat, string date, string time)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
                 {
-                    // Open the database connection
                     connection.Open();
 
-                    // Updated SQL query to use the correct column name for username
-                    string query = "INSERT INTO [dbo].[Reservations] (Seat, Name, Date, Time) " +
-                                   "VALUES (@seat, @name, @date, @time)";
+                    string query = @"
+                        INSERT INTO Reservations (Seat, Name, Date, Time)
+                        VALUES (@Seat, @Name, @Date, @Time)";
 
-                    // Create the SQL command
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Add the parameters to the query to prevent SQL injection
-                        command.Parameters.AddWithValue("@seat", seat);
-                        command.Parameters.AddWithValue("@name", username);
-                        command.Parameters.AddWithValue("@date", date);
-                        command.Parameters.AddWithValue("@time", time);
-
-                        // Execute the query to save the reservation
+                        command.Parameters.AddWithValue("@Seat", seat);
+                        command.Parameters.AddWithValue("@Name", username);
+                        command.Parameters.AddWithValue("@Date", date);
+                        command.Parameters.AddWithValue("@Time", time);
                         command.ExecuteNonQuery();
                     }
-
-                    MessageBox.Show("Reservation saved successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -94,23 +104,13 @@ namespace AuditoriumSeatReservationSystem
             }
         }
 
-
-        // Event handlers for the TextBox controls to manage placeholder text behavior
+        // Placeholder text handlers for Date and Time fields
         private void TxtDate_Enter(object sender, EventArgs e)
         {
             if (txtDate.Text == "Enter Date (YYYY-MM-DD)")
             {
-                txtDate.Text = ""; // Clear placeholder text
-                txtDate.ForeColor = System.Drawing.Color.Black; // Change text color to black
-            }
-        }
-
-        private void TxtDate_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtDate.Text))
-            {
-                txtDate.Text = "Enter Date (YYYY-MM-DD)"; // Reset placeholder text if empty
-                txtDate.ForeColor = System.Drawing.Color.Gray; // Change text color back to gray
+                txtDate.Text = ""; 
+                txtDate.ForeColor = System.Drawing.Color.Black;
             }
         }
 
@@ -118,17 +118,8 @@ namespace AuditoriumSeatReservationSystem
         {
             if (txtTime.Text == "Enter Time (HH:MM)")
             {
-                txtTime.Text = ""; // Clear placeholder text
-                txtTime.ForeColor = System.Drawing.Color.Black; // Change text color to black
-            }
-        }
-
-        private void TxtTime_Leave(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtTime.Text))
-            {
-                txtTime.Text = "Enter Time (HH:MM)"; // Reset placeholder text if empty
-                txtTime.ForeColor = System.Drawing.Color.Gray; // Change text color back to gray
+                txtTime.Text = "";
+                txtTime.ForeColor = System.Drawing.Color.Black;
             }
         }
     }

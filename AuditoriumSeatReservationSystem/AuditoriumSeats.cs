@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AuditoriumSeatReservationSystem
@@ -8,79 +10,138 @@ namespace AuditoriumSeatReservationSystem
     public partial class AuditoriumSeats : Form
     {
         private string currentUser;
-        private string selectedSeat; // Holds the selected seat
+        private string selectedSeat;
+        private Dictionary<Button, bool> seatAvailability; 
 
         public AuditoriumSeats(string username)
         {
             currentUser = username;
             InitializeComponent();
-            GenerateAuditoriumLayout();
-            LoadReservations();
+            InitializeSeats(); 
+            LoadReservations(); 
         }
 
-        private void GenerateAuditoriumLayout()
+        private void InitializeSeats()
         {
-            // Create seat sections
-            CreateSection(5, 5, 50, 100, "LeftSection", 50, 50, Color.LightGray);
-            CreateSection(5, 10, 400, 100, "MiddleSection", 50, 50, Color.LightGray);
-            CreateSection(5, 5, 750, 100, "RightSection", 50, 50, Color.LightGray);
+            seatAvailability = new Dictionary<Button, bool>();
+
+            // Define seat dimensions and spacing
+            int seatSize = 40;
+            int padding = 10;
+            int aisleSpacing = 80; 
+
+            // --- Left Section ---
+            int[] leftCols = { 5, 6, 7, 8, 9 };
+            int leftOffsetX = 20;
+            int leftOffsetY = 20;
+
+            for (int row = 0; row < leftCols.Length; row++)
+            {
+                for (int col = 0; col < leftCols[row]; col++)
+                {
+                    Button seatButton = new Button
+                    {
+                        Name = $"btnSeat_Left_{row}_{col}",
+                        Size = new Size(seatSize, seatSize),
+                        Location = new Point(leftOffsetX + (col * (seatSize + padding)), leftOffsetY + (row * (seatSize + padding))),
+                        BackColor = Color.Green,
+                        Text = $"L {row + 1}-{col + 1}" // Add "L" prefix for Left section
+                    };
+
+                    seatButton.Click += SeatButton_Click;
+                    seatAvailability[seatButton] = true; // Seat is available
+                    this.Controls.Add(seatButton);
+                }
+            }
+
+            // --- Middle Section ---
+            int middleRows = 6;
+            int middleCols = 14;
+            int middleOffsetX = leftOffsetX + (leftCols.Max() * (seatSize + padding)) + aisleSpacing;
+            int middleOffsetY = 20;
+
+            for (int row = 0; row < middleRows; row++)
+            {
+                for (int col = 0; col < middleCols; col++)
+                {
+                    Button seatButton = new Button
+                    {
+                        Name = $"btnSeat_Middle_{row}_{col}",
+                        Size = new Size(seatSize, seatSize),
+                        Location = new Point(middleOffsetX + (col * (seatSize + padding)), middleOffsetY + (row * (seatSize + padding))),
+                        BackColor = Color.Green,
+                        Text = $"M {row + 1}-{col + 1}" // "M" prefix for Middle section
+                    };
+
+                    seatButton.Click += SeatButton_Click;
+                    seatAvailability[seatButton] = true;
+                    this.Controls.Add(seatButton);
+                }
+            }
+
+            // --- Right Section ---
+            int[] rightCols = { 5, 6, 7, 8, 9 };
+            int rightOffsetX = middleOffsetX + (middleCols * (seatSize + padding)) + aisleSpacing;
+            int rightOffsetY = 20;
+
+            for (int row = 0; row < rightCols.Length; row++)
+            {
+                for (int col = 0; col < rightCols[row]; col++)
+                {
+                    Button seatButton = new Button
+                    {
+                        Name = $"btnSeat_Right_{row}_{col}",
+                        Size = new Size(seatSize, seatSize),
+                        Location = new Point(rightOffsetX + (col * (seatSize + padding)), rightOffsetY + (row * (seatSize + padding))),
+                        BackColor = Color.Green,
+                        Text = $"R {row + 1}-{col + 1}" // "R" prefix for Right section
+                    };
+
+                    seatButton.Click += SeatButton_Click;
+                    seatAvailability[seatButton] = true;
+                    this.Controls.Add(seatButton);
+                }
+            }
 
             AddLegend();
         }
 
-        private void CreateSection(int rows, int cols, int startX, int startY, string sectionName, int buttonWidth, int buttonHeight, Color defaultColor)
-        {
-            for (int row = 0; row < rows; row++)
-            {
-                for (int col = 0; col < cols; col++)
-                {
-                    Button seat = new Button
-                    {
-                        Name = $"{sectionName}_R{row}_C{col}",
-                        Text = $"{sectionName[0]}{row + 1}{col + 1}",
-                        Size = new Size(buttonWidth, buttonHeight),
-                        Location = new Point(startX + col * buttonWidth, startY + row * buttonHeight),
-                        BackColor = defaultColor
-                    };
-                    seat.Click += Seat_Click;
-                    this.Controls.Add(seat);
-                }
-            }
-        }
-
-        private void Seat_Click(object sender, EventArgs e)
+        private void SeatButton_Click(object sender, EventArgs e)
         {
             Button clickedSeat = sender as Button;
 
-            if (clickedSeat.BackColor == Color.LightGray) // Available
+            if (seatAvailability[clickedSeat]) 
             {
+                // Reset previously selected seat
                 if (!string.IsNullOrEmpty(selectedSeat))
                 {
-                    // Reset previous selection
-                    foreach (Control control in this.Controls)
+                    List<Button> seatsToUpdate = new List<Button>(); // Temporary list to hold seats to update
+
+                    foreach (var seat in seatAvailability.Keys)
                     {
-                        if (control is Button btn && btn.Text == selectedSeat)
+                        if (seat.Text == selectedSeat)
                         {
-                            btn.BackColor = Color.LightGray;
+                            seatsToUpdate.Add(seat); // Add seats that need updating to the list
                         }
+                    }
+
+                    // Apply the color update after the loop completes
+                    foreach (var seat in seatsToUpdate)
+                    {
+                        seat.BackColor = Color.Green; // Reset the previously selected seat to available
                     }
                 }
 
-                clickedSeat.BackColor = Color.Red;
-                selectedSeat = clickedSeat.Text; // Store the selected seat
+                clickedSeat.BackColor = Color.Yellow;
+                selectedSeat = clickedSeat.Text;
             }
-            else if (clickedSeat.BackColor == Color.Red) // Already selected
+            else
             {
-                clickedSeat.BackColor = Color.LightGray;
-                selectedSeat = null; // Deselect
-            }
-            else if (clickedSeat.BackColor == Color.Green) // Reserved for disabled
-            {
-                MessageBox.Show("This seat is reserved for disabled users!");
+                MessageBox.Show("This seat is already reserved or unavailable.", "Seat Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
-        private void btnReserve_Click(object sender, EventArgs e)
+        private void BtnReserve_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(selectedSeat))
             {
@@ -88,15 +149,21 @@ namespace AuditoriumSeatReservationSystem
                 return;
             }
 
+            if (IsSeatReserved(selectedSeat))
+            {
+                MessageBox.Show("This seat has already been reserved.", "Seat Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             var confirmForm = new ConfirmSelectionForm(selectedSeat, currentUser);
             confirmForm.ShowDialog();
+            LoadReservations();
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void BtnBack_Click(object sender, EventArgs e)
         {
-
-            LoginForm loginForm = new LoginForm();
-            loginForm.Show();
+            HomeUserForm homeUserForm = new HomeUserForm(currentUser); 
+            homeUserForm.Show();
             this.Hide();
         }
 
@@ -105,7 +172,7 @@ namespace AuditoriumSeatReservationSystem
             Label lblAvailable = new Label
             {
                 Text = "Available Seats",
-                BackColor = Color.LightGray,
+                BackColor = Color.Green,
                 Width = 150,
                 Height = 30,
                 Location = new Point(50, 450)
@@ -120,10 +187,10 @@ namespace AuditoriumSeatReservationSystem
                 Location = new Point(250, 450)
             };
 
-            Label lblDisabled = new Label
+            Label lblSelected = new Label
             {
-                Text = "Disabled Seats",
-                BackColor = Color.Green,
+                Text = "Selected Seat",
+                BackColor = Color.Yellow,
                 Width = 150,
                 Height = 30,
                 Location = new Point(450, 450)
@@ -131,7 +198,7 @@ namespace AuditoriumSeatReservationSystem
 
             this.Controls.Add(lblAvailable);
             this.Controls.Add(lblReserved);
-            this.Controls.Add(lblDisabled);
+            this.Controls.Add(lblSelected);
         }
 
         private void LoadReservations()
@@ -141,24 +208,58 @@ namespace AuditoriumSeatReservationSystem
             using (var conn = new SqlConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT Seat FROM Reservations WHERE Name = @Name";
+                string query = "SELECT Seat, Name FROM Reservations";
                 using (var cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Name", currentUser);
                     var reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
-                        string reservedSeatName = reader.GetString(0);
-                        foreach (Control control in this.Controls)
+                        string reservedSeatName = reader.GetString(0); 
+                        string reservedByName = reader.GetString(1);  
+
+                        List<Button> seatsToUpdate = new List<Button>(); // Temporary list to hold seats to update
+
+                        foreach (var seat in seatAvailability.Keys)
                         {
-                            if (control is Button seat && seat.Name == reservedSeatName)
+                            if (seat.Text == reservedSeatName)
                             {
-                                seat.BackColor = Color.Red;
+                                seatsToUpdate.Add(seat); 
                             }
+                        }
+
+                        // Now apply the updates for the reserved seats after the loop
+                        foreach (var seat in seatsToUpdate)
+                        {
+                            seat.Text = $"{reservedSeatName}\n({reservedByName})";
+                            seat.BackColor = Color.Red;
+                            seat.Enabled = false;
+                            seatAvailability[seat] = false; 
                         }
                     }
                 }
             }
+        }
+
+        private bool IsSeatReserved(string seat)
+        {
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Frank\Documents\AuditoriumSeatSystem.mdf;Integrated Security=True;Connect Timeout=30";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT COUNT(*) FROM Reservations WHERE Seat = @Seat";
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Seat", seat);
+                    int count = (int)cmd.ExecuteScalar();
+                    return count > 0; 
+                }
+            }
+        }
+
+        private void AuditoriumSeats_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

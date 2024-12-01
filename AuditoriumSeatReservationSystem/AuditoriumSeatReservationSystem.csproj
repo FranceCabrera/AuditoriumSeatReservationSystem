@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminPanel.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdminPanel.Designer.cs">
+      <DependentUpon>AdminPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="AuditoriumSeats.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,11 +70,23 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="HomeUserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HomeUserForm.Designer.cs">
+      <DependentUpon>HomeUserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MyReservationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MyReservationForm.Designer.cs">
+      <DependentUpon>MyReservationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -84,14 +102,24 @@
     <Compile Include="ReservationReceiptForm.Designer.cs">
       <DependentUpon>ReservationReceiptForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="using.cs" />
     <EmbeddedResource Include="AuditoriumSeats.resx">
       <DependentUpon>AuditoriumSeats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConfirmSelectionForm.resx">
+      <DependentUpon>ConfirmSelectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="HomeUserForm.resx">
+      <DependentUpon>HomeUserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MyReservationForm.resx">
+      <DependentUpon>MyReservationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
