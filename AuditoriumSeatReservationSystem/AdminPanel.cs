@@ -85,6 +85,7 @@ namespace AuditoriumSeatReservationSystem
         {
             LoginForm loginForm = new LoginForm();
             loginForm.Show();
+            this.Close();
         }
         private void BtnDelete_Click(object sender, EventArgs e)
         {
