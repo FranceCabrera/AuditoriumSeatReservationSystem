@@ -76,11 +76,9 @@ namespace AuditoriumSeatReservationSystem
 
         private void btnLogout_Click(object sender, EventArgs e)
         {
-            // Create and show the login form
             LoginForm loginForm = new LoginForm();
             loginForm.Show();
 
-            // Close the current form (HomeUserForm)
             this.Close();
         }
     }

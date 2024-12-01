@@ -103,6 +103,9 @@
       <DependentUpon>ReservationReceiptForm.cs</DependentUpon>
     </Compile>
     <Compile Include="using.cs" />
+    <EmbeddedResource Include="AdminPanel.resx">
+      <DependentUpon>AdminPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AuditoriumSeats.resx">
       <DependentUpon>AuditoriumSeats.cs</DependentUpon>
     </EmbeddedResource>

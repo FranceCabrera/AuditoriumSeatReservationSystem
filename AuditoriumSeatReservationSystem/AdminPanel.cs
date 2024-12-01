@@ -81,6 +81,11 @@ namespace AuditoriumSeatReservationSystem
             }
         }
 
+        private void BtnLogOut_Click(object sender, EventArgs e)
+        {
+            LoginForm loginForm = new LoginForm();
+            loginForm.Show();
+        }
         private void BtnDelete_Click(object sender, EventArgs e)
         {
             if (dgvReservations.SelectedRows.Count > 0)

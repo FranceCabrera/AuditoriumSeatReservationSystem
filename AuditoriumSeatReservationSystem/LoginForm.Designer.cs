@@ -17,6 +17,7 @@ namespace AuditoriumSeatReservationSystem
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtEmail
@@ -38,7 +39,7 @@ namespace AuditoriumSeatReservationSystem
             // 
             this.btnLogin.BackColor = System.Drawing.SystemColors.HotTrack;
             this.btnLogin.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.ForeColor = System.Drawing.Color.White;
+            this.btnLogin.ForeColor = System.Drawing.SystemColors.Window;
             this.btnLogin.Location = new System.Drawing.Point(119, 261);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(136, 48);
@@ -94,10 +95,24 @@ namespace AuditoriumSeatReservationSystem
             this.label4.Text = "Please log in to manage your reservations and\r\n      secure seats for upcoming UM" +
     "ak events";
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Red;
+            this.button1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold);
+            this.button1.ForeColor = System.Drawing.SystemColors.Window;
+            this.button1.Location = new System.Drawing.Point(119, 324);
+            this.button1.Name = "btnBack";
+            this.button1.Size = new System.Drawing.Size(136, 49);
+            this.button1.TabIndex = 8;
+            this.button1.Text = "Back";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.BtnBack_Click);
+            // 
             // LoginForm
             // 
             this.BackColor = System.Drawing.Color.SteelBlue;
-            this.ClientSize = new System.Drawing.Size(373, 324);
+            this.ClientSize = new System.Drawing.Size(373, 399);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -108,6 +123,7 @@ namespace AuditoriumSeatReservationSystem
             this.Name = "LoginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login";
+            this.Load += new System.EventHandler(this.LoginForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -117,5 +133,6 @@ namespace AuditoriumSeatReservationSystem
         private Label label2;
         private Label label3;
         private Label label4;
+        private Button button1;
     }
 }

@@ -17,7 +17,6 @@ namespace AuditoriumSeatReservationSystem
         }
         private void BtnBack_Click(object sender, EventArgs e)
         {
-            // Navigate back to the HomeUserForm
             var homeUserForm = new HomeUserForm(userEmail); 
             homeUserForm.Show();
             this.Close();
